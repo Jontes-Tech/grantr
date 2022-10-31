@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { GrantProgram } from '../../../backend/src/grant.type';
@@ -24,12 +23,19 @@ export const AdminPostList: FC = () => {
             {data.documents.map((program) => (
                 <div
                     key={program.value.id}
-                    className="w-full bg-primary p-4 flex justify-between mb-4 rounded-xl"
+                    onClick={() => {console.log(program.value)}}
+                    className="w-full justify-left flex justify-start pt-4"
                 >
-                    <div>{program.value.name}</div>
-                    <Link to={'/admin/' + program.value.id + '/edit'}>
-                        EDIT
-                    </Link>
+                    <img
+                        className="h-8 mr-2 aspect-square rounded-full"
+                        src={program.value.image_url ? program.value.image_url : 'http://localhost:1234/favicon.09ab7678.png'}
+                    ></img>
+                    <div className="align-middle">
+                        <p className="text-white text-sm">
+                            {program.value.name}
+                        </p>
+                        <p className="text-gray-600 text-xs">Last updated 33 seconds ago<br/> by Jonte</p>
+                    </div>
                 </div>
             ))}
         </>

@@ -1,34 +1,29 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
-
 import { AdminPostList } from './AdminPostList';
 
 export const Admin: FC = () => {
     return (
-        <div className="lcontainer">
-            <div className="max-w-2xl mx-auto px-4">
-                <div className="border-b border-neutral-500 w-full mb-4 flex items-center justify-between">
-                    <div className="text-2xl mb-4 text-primary">
-                        Secret DefiGirl Menu
+        <div>
+            {/* React requires me to make this div here :jonteshrug: */}
+            <div className="flex">
+                {/* This is the div for everthing except the navbar */}
+                <aside
+                    className="w-72 h-full border-r-2 border-gray-600"
+                    aria-label="Sidebar"
+                >
+                    <div className="overflow-y-auto py-4 px-3 bg-dark rounded border-white">
+                        <ul className="space-y-2">
+                            <p className="bg-primary text-center p-2 border-gray-600 border-4">
+                                Grants
+                            </p>
+                            <AdminPostList />
+                        </ul>
                     </div>
-                    <div className="flex gap-2">
-                        <Link
-                            className="bg-primary py-1 px-2 rounded-lg"
-                            to={'/admin/tags'}
-                        >
-                            TAGS
-                        </Link>
-                        <Link
-                            className="bg-primary py-1 px-2 rounded-lg"
-                            to={'/admin/new'}
-                        >
-                            NEW
-                        </Link>
-                    </div>
-                </div>
-                <div className="w-full">
-                    <AdminPostList />
-                </div>
+                </aside>
+                <main className="m-10">
+                    <h1 className="text-white text-4xl">Jonte is very epic :)</h1>
+                    <p className='text-gray-400'>Here we need to add the content later, oh and also we gotta add a navbar!</p>
+                </main>
             </div>
         </div>
     );
