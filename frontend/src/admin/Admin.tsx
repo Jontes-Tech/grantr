@@ -53,9 +53,9 @@ export const Admin: FC = () => {
 
     return (
         <div>
-            {/* React requires me to make this div here :jonteshrug: */}
+            {/* We'll pretend there's a navbar here */}
             <div className="flex">
-                {/* This is the div for everthing except the navbar */}
+                {/* This is going to be the div for everthing except the navbar */}
                 <aside
                     className="w-72 h-full border-r-2 border-gray-600"
                     aria-label="Sidebar"
@@ -176,6 +176,7 @@ export const Admin: FC = () => {
                                 type="button"
                                 className="bg-primary text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
                             >
+                                {/* TODO: Implement actual save functionality!! */}
                                 Save
                             </button>
                         </div>
