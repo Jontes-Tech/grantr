@@ -3,6 +3,8 @@ import useSWR from 'swr';
 
 import { GrantProgram } from '../../../backend/src/grant.type';
 import { GLOBALS } from '..';
+import { Link } from 'react-router-dom';
+import notfoundimage from '../images/notfoundimage.webp'
 
 export const AdminPostList: FC = () => {
     const { data, error } = useSWR('/api/all', async () => {
@@ -21,22 +23,27 @@ export const AdminPostList: FC = () => {
     return (
         <>
             {data.documents.map((program) => (
-                <div
+                <Link
                     key={program.value.id}
-                    onClick={() => {console.log(program.value)}}
+                    to={'/admin/g/'+program.value.id}
                     className="w-full justify-left flex justify-start pt-4"
                 >
                     <img
                         className="h-8 mr-2 aspect-square rounded-full"
-                        src={program.value.image_url ? program.value.image_url : 'http://localhost:1234/favicon.09ab7678.png'}
+                        src={
+                            program.value.image_url || notfoundimage
+                        }
                     ></img>
                     <div className="align-middle">
                         <p className="text-white text-sm">
                             {program.value.name}
                         </p>
-                        <p className="text-gray-600 text-xs">Last updated 33 seconds ago<br/> by Jonte</p>
+                        <p className="text-gray-600 text-xs">
+                            Last updated 33 seconds ago
+                            <br /> by Jonte
+                        </p>
                     </div>
-                </div>
+                </Link>
             ))}
         </>
     );
