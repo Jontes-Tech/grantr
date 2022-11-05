@@ -9,12 +9,13 @@ import plusimage from '../images/plusimage.webp';
 import Select, { StylesConfig } from 'react-select';
 import { useState, useEffect, useMemo } from 'react';
 import { theme } from '../styles/selectStyle';
+import { TextInput } from './components/TextInput';
 
 export const Admin: FC = () => {
 
-    const inputStyle =
-        'focus:outline-none focus:border-2 focus:border-primary focus:ring-primary bg-neutral-600 text-sm rounded-lg block w-full p-2.5 text-white ';
     const [showSidebar, setShowSidebar] = useState(true);
+
+    // TODO: Somehow make this more readable and less bloated
     const websiteRef = useRef(null);
     const twitterRef = useRef(null);
     const discordRef = useRef(null);
@@ -105,7 +106,6 @@ export const Admin: FC = () => {
                 </div>
             </div>
             <div className="flex">
-                {/* This is going to be the div for everthing except the navbar */}
                 {showSidebar && (
                     <aside
                         className="w-72 h-full border-r-2 border-gray-600 sticky top-0 left-0"
@@ -174,89 +174,15 @@ export const Admin: FC = () => {
                                 </div>
                             </div>
                             <div className="grid md:grid-cols-2 gap-2">
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Website
-                                    <input
-                                        defaultValue={grant?.website}
-                                        ref={websiteRef}
-                                        placeholder="https://grantr.app"
-                                        className={inputStyle}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Twitter
-                                    <input
-                                        defaultValue={grant?.twitter || ''}
-                                        placeholder="grantrapp"
-                                        ref={twitterRef}
-                                        className={inputStyle}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Discord
-                                    <input
-                                        defaultValue={grant?.discord || ''}
-                                        placeholder="https://discord.gg/QnRvyGNcYU"
-                                        ref={discordRef}
-                                        className={inputStyle}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Telegram
-                                    <input
-                                        defaultValue={grant?.telegram || ''}
-                                        placeholder="https://t.me/grantr"
-                                        ref={telegramRef}
-                                        className={inputStyle}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Whitepaper
-                                    <input
-                                        defaultValue={grant?.whitepaper || ''}
-                                        placeholder="https://grantr.app/whitepaper"
-                                        ref={whitepaperRef}
-                                        className={inputStyle}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Image URL
-                                    <input
-                                        defaultValue={grant?.image_url || ''}
-                                        placeholder="https://grantr.app/favicon.26c58106.png"
-                                        className={inputStyle}
-                                        ref={imageURLRef}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Minimum Amount
-                                    <input
-                                        type="number"
-                                        defaultValue={grant?.min_amount || 0}
-                                        placeholder="100"
-                                        className={inputStyle}
-                                        ref={minRef}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Maximum Amount
-                                    <input
-                                        defaultValue={grant?.max_amount || 0}
-                                        type="number"
-                                        placeholder="1000"
-                                        className={inputStyle}
-                                        ref={maxRef}
-                                    ></input>
-                                </div>
-                                <div className="bg-neutral-800 p-2 rounded-lg shadow-lg">
-                                    Currency
-                                    <input
-                                        defaultValue={grant?.currency || ''}
-                                        placeholder=""
-                                        className={inputStyle}
-                                        ref={currencyRef}
-                                    ></input>
-                                </div>
+                                <TextInput name="Website" defaultValue={grant?.website} ref={websiteRef} placeholder="https://grantr.app" type="text"/>
+                                <TextInput name="Twitter" defaultValue={grant?.twitter} ref={twitterRef} placeholder="grantrapp" type="text"/>
+                                <TextInput name="Discord" defaultValue={grant?.discord} ref={discordRef} placeholder="https://discord.gg/QnRvyGNcYU" type="text"/>
+                                <TextInput name="Telegram" defaultValue={grant?.telegram} ref={telegramRef} placeholder="https://t.me/grantr" type="text"/>
+                                <TextInput name="Whitepaper" defaultValue={grant?.whitepaper} ref={whitepaperRef} placeholder="https://grantr.app/whitepaper" type="text"/>
+                                <TextInput name="Image URL" defaultValue={grant?.image_url} ref={imageURLRef} placeholder="https://grantr.app/favicon.26c58106.png" type="text"/>
+                                <TextInput name="Minimum Amount" defaultValue={grant?.min_amount} ref={minRef} placeholder="0" type="number"/>
+                                <TextInput name="Maximum Amount" defaultValue={grant?.max_amount} ref={maxRef} placeholder="1000" type="number"/>
+                                <TextInput name="Currency" defaultValue={grant?.currency} ref={currencyRef} placeholder="" type="text"/>
                             </div>
                             <div className="mt-4">
                                 <h2 className="text-xl pb-2">Description</h2>
