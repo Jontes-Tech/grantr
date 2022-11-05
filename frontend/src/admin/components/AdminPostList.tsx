@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import useSWR from 'swr';
 
-import { GrantProgram } from '../../../backend/src/grant.type';
-import { GLOBALS } from '..';
+import { GrantProgram } from '../../../../backend/src/grant.type';
+import { GLOBALS } from '../..';
 import { Link } from 'react-router-dom';
-import notfoundimage from '../images/notfoundimage.webp'
+import notfoundimage from '../../images/notfoundimage.webp'
 
 export const AdminPostList: FC = () => {
     const { data, error } = useSWR('/api/all', async () => {
@@ -38,7 +38,7 @@ export const AdminPostList: FC = () => {
                         <p className="text-white text-sm">
                             {program.value.name}
                         </p>
-                        <p className="text-gray-600 text-xs">
+                        <p className="text-gray-600 text-xs hidden sm:block">
                             Last updated 33 seconds ago
                             <br /> by Jonte
                         </p>
