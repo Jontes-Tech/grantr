@@ -9,10 +9,9 @@ import plusimage from '../images/plusimage.webp';
 import Select, { StylesConfig } from 'react-select';
 import { useState, useEffect, useMemo } from 'react';
 import { theme } from '../styles/selectStyle';
-import { TextInput } from './components/TextInput';
+import TextInput from './components/TextInput';
 
 export const Admin: FC = () => {
-
     const [showSidebar, setShowSidebar] = useState(true);
 
     // TODO: Somehow make this more readable and less bloated
@@ -174,15 +173,69 @@ export const Admin: FC = () => {
                                 </div>
                             </div>
                             <div className="grid md:grid-cols-2 gap-2">
-                                <TextInput name="Website" defaultValue={grant?.website} ref={websiteRef} placeholder="https://grantr.app" type="text"/>
-                                <TextInput name="Twitter" defaultValue={grant?.twitter} ref={twitterRef} placeholder="grantrapp" type="text"/>
-                                <TextInput name="Discord" defaultValue={grant?.discord} ref={discordRef} placeholder="https://discord.gg/QnRvyGNcYU" type="text"/>
-                                <TextInput name="Telegram" defaultValue={grant?.telegram} ref={telegramRef} placeholder="https://t.me/grantr" type="text"/>
-                                <TextInput name="Whitepaper" defaultValue={grant?.whitepaper} ref={whitepaperRef} placeholder="https://grantr.app/whitepaper" type="text"/>
-                                <TextInput name="Image URL" defaultValue={grant?.image_url} ref={imageURLRef} placeholder="https://grantr.app/favicon.26c58106.png" type="text"/>
-                                <TextInput name="Minimum Amount" defaultValue={grant?.min_amount} ref={minRef} placeholder="0" type="number"/>
-                                <TextInput name="Maximum Amount" defaultValue={grant?.max_amount} ref={maxRef} placeholder="1000" type="number"/>
-                                <TextInput name="Currency" defaultValue={grant?.currency} ref={currencyRef} placeholder="" type="text"/>
+                                <TextInput
+                                    name="Website"
+                                    defaultValue={grant?.website}
+                                    ref={websiteRef}
+                                    placeholder="https://grantr.app"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Twitter"
+                                    defaultValue={grant?.twitter}
+                                    ref={twitterRef}
+                                    placeholder="grantrapp"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Discord"
+                                    defaultValue={grant?.discord}
+                                    ref={discordRef}
+                                    placeholder="https://discord.gg/QnRvyGNcYU"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Telegram"
+                                    defaultValue={grant?.telegram}
+                                    ref={telegramRef}
+                                    placeholder="https://t.me/grantr"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Whitepaper"
+                                    defaultValue={grant?.whitepaper}
+                                    ref={whitepaperRef}
+                                    placeholder="https://grantr.app/whitepaper"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Image URL"
+                                    defaultValue={grant?.image_url}
+                                    ref={imageURLRef}
+                                    placeholder="https://grantr.app/favicon.26c58106.png"
+                                    type="text"
+                                />
+                                <TextInput
+                                    name="Minimum Amount"
+                                    defaultValue={grant?.min_amount}
+                                    ref={minRef}
+                                    placeholder="0"
+                                    type="number"
+                                />
+                                <TextInput
+                                    name="Maximum Amount"
+                                    defaultValue={grant?.max_amount}
+                                    ref={maxRef}
+                                    placeholder="1000"
+                                    type="number"
+                                />
+                                <TextInput
+                                    name="Currency"
+                                    defaultValue={grant?.currency}
+                                    ref={currencyRef}
+                                    placeholder=""
+                                    type="text"
+                                />
                             </div>
                             <div className="mt-4">
                                 <h2 className="text-xl pb-2">Description</h2>
@@ -215,7 +268,13 @@ export const Admin: FC = () => {
                                 >
                                     Save
                                 </button>
-                                <p className='text-xs text-neutral-500'><span className='text-neutral-400 text-bold uppercase'>Protip!</span> Make sure you are certain about the content you submit. There is no undo.</p>
+                                <p className="text-xs text-neutral-500">
+                                    <span className="text-neutral-400 text-bold uppercase">
+                                        Protip!
+                                    </span>{' '}
+                                    Make sure you are certain about the content
+                                    you submit. There is no undo.
+                                </p>
                             </div>
                         </div>
                     )}
