@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { theme } from '../styles/selectStyle';
 import TextInput from './components/TextInput';
 
-export const Admin: FC = () => {
+export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     const [showSidebar, setShowSidebar] = useState(true);
 
     // TODO: Somehow make this more readable and less bloated
@@ -135,148 +135,166 @@ export const Admin: FC = () => {
                     </aside>
                 )}
                 <main className="md:m-14">
-                    {!id && (
-                        <div>
-                            <h1 className="text-4xl text-white">
-                                Welcome to the Admin Interface!
-                            </h1>
-                            <p className="text-2xl text-gray-400">
-                                Select one of grants on the left hand side of
-                                the screen to edit one.
-                            </p>
-                        </div>
-                    )}
-                    {id && (
-                        <div className="p-2 text-white">
-                            <div className="flex place-items-center">
-                                <img
-                                    className="aspect-square h-16 rounded-full border-2 border-gray-400"
-                                    src={grant?.image_url || notfoundimage}
-                                />
-                                <h1 className="p-4 text-3xl inline-block text-white">
-                                    {grant?.name}
-                                </h1>
-                            </div>
-                            <div className="py-8">
-                                <h2 className="text-xl pb-2">
-                                    Tags and Labels
-                                </h2>
-                                <div className="max-w-full">
-                                    <Select
-                                        name="colors"
-                                        options={tagOptions}
-                                        value={selectedTags}
-                                        onChange={(e) => setSelectedTags(e)}
-                                        isMulti
-                                        theme={theme}
-                                    />
+                    {!isNew && (
+                        <>
+                            {!id && (
+                                <div>
+                                    <h1 className="text-4xl text-white">
+                                        Welcome to the Admin Interface!
+                                    </h1>
+                                    <p className="text-2xl text-gray-400">
+                                        Select one of grants on the left hand
+                                        side of the screen to edit one.
+                                    </p>
                                 </div>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-2">
-                                <TextInput
-                                    name="Website"
-                                    defaultValue={grant?.website}
-                                    ref={websiteRef}
-                                    placeholder="https://grantr.app"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Twitter"
-                                    defaultValue={grant?.twitter}
-                                    ref={twitterRef}
-                                    placeholder="grantrapp"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Discord"
-                                    defaultValue={grant?.discord}
-                                    ref={discordRef}
-                                    placeholder="https://discord.gg/QnRvyGNcYU"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Telegram"
-                                    defaultValue={grant?.telegram}
-                                    ref={telegramRef}
-                                    placeholder="https://t.me/grantr"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Whitepaper"
-                                    defaultValue={grant?.whitepaper}
-                                    ref={whitepaperRef}
-                                    placeholder="https://grantr.app/whitepaper"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Image URL"
-                                    defaultValue={grant?.image_url}
-                                    ref={imageURLRef}
-                                    placeholder="https://grantr.app/favicon.26c58106.png"
-                                    type="text"
-                                />
-                                <TextInput
-                                    name="Minimum Amount"
-                                    defaultValue={grant?.min_amount}
-                                    ref={minRef}
-                                    placeholder="0"
-                                    type="number"
-                                />
-                                <TextInput
-                                    name="Maximum Amount"
-                                    defaultValue={grant?.max_amount}
-                                    ref={maxRef}
-                                    placeholder="1000"
-                                    type="number"
-                                />
-                                <TextInput
-                                    name="Currency"
-                                    defaultValue={grant?.currency}
-                                    ref={currencyRef}
-                                    placeholder=""
-                                    type="text"
-                                />
-                            </div>
-                            <div className="mt-4">
-                                <h2 className="text-xl pb-2">Description</h2>
-                                <textarea
-                                    className="
-                                  form-control
-                                  block
-                                  w-full
-                                  px-3
-                                  py-1.5
-                                  text-base
-                                  font-normal
-                                  text-white
-                                  bg-neutral-700 bg-clip-padding
-                                  border border-solid border-gray-500
-                                  rounded
-                                  transition
-                                  ease-in-out
-                                  m-0
-                                  focus:outline-none focus:border-primary
-                                "
-                                    rows={3}
-                                ></textarea>
-                            </div>
-                            <div>
-                                <button
-                                    type="button"
-                                    onClick={submit}
-                                    className="bg-primary text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
-                                >
-                                    Save
-                                </button>
-                                <p className="text-xs text-neutral-500">
-                                    <span className="text-neutral-400 text-bold uppercase">
-                                        Protip!
-                                    </span>{' '}
-                                    Make sure you are certain about the content
-                                    you submit. There is no undo.
-                                </p>
-                            </div>
-                        </div>
+                            )}
+                            {id && (
+                                <div className="p-2 text-white">
+                                    <div className="flex place-items-center">
+                                        <img
+                                            className="aspect-square h-16 rounded-full border-2 border-gray-400"
+                                            src={
+                                                grant?.image_url ||
+                                                notfoundimage
+                                            }
+                                        />
+                                        <h1 className="p-4 text-3xl inline-block text-white">
+                                            {grant?.name}
+                                        </h1>
+                                    </div>
+                                    <div className="py-8">
+                                        <h2 className="text-xl pb-2">
+                                            Tags and Labels
+                                        </h2>
+                                        <div className="max-w-full">
+                                            <Select
+                                                name="colors"
+                                                options={tagOptions}
+                                                value={selectedTags}
+                                                onChange={(e) =>
+                                                    setSelectedTags(e)
+                                                }
+                                                isMulti
+                                                theme={theme}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-2">
+                                        <TextInput
+                                            name="Website"
+                                            defaultValue={grant?.website}
+                                            ref={websiteRef}
+                                            placeholder="https://grantr.app"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Twitter"
+                                            defaultValue={grant?.twitter}
+                                            ref={twitterRef}
+                                            placeholder="grantrapp"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Discord"
+                                            defaultValue={grant?.discord}
+                                            ref={discordRef}
+                                            placeholder="https://discord.gg/QnRvyGNcYU"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Telegram"
+                                            defaultValue={grant?.telegram}
+                                            ref={telegramRef}
+                                            placeholder="https://t.me/grantr"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Whitepaper"
+                                            defaultValue={grant?.whitepaper}
+                                            ref={whitepaperRef}
+                                            placeholder="https://grantr.app/whitepaper"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Image URL"
+                                            defaultValue={grant?.image_url}
+                                            ref={imageURLRef}
+                                            placeholder="https://grantr.app/favicon.26c58106.png"
+                                            type="text"
+                                        />
+                                        <TextInput
+                                            name="Minimum Amount"
+                                            defaultValue={grant?.min_amount}
+                                            ref={minRef}
+                                            placeholder="0"
+                                            type="number"
+                                        />
+                                        <TextInput
+                                            name="Maximum Amount"
+                                            defaultValue={grant?.max_amount}
+                                            ref={maxRef}
+                                            placeholder="1000"
+                                            type="number"
+                                        />
+                                        <TextInput
+                                            name="Currency"
+                                            defaultValue={grant?.currency}
+                                            ref={currencyRef}
+                                            placeholder=""
+                                            type="text"
+                                        />
+                                    </div>
+                                    <div className="mt-4">
+                                        <h2 className="text-xl pb-2">
+                                            Description
+                                        </h2>
+                                        <textarea
+                                            className="
+              form-control
+              block
+              w-full
+              px-3
+              py-1.5
+              text-base
+              font-normal
+              text-white
+              bg-neutral-700 bg-clip-padding
+              border border-solid border-gray-500
+              rounded
+              transition
+              ease-in-out
+              m-0
+              focus:outline-none focus:border-primary
+            "
+                                            rows={3}
+                                        ></textarea>
+                                    </div>
+                                    <div>
+                                        <button
+                                            type="button"
+                                            onClick={submit}
+                                            className="bg-primary text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
+                                        >
+                                            Save
+                                        </button>
+                                        <p className="text-xs text-neutral-500">
+                                            <span className="text-neutral-400 text-bold uppercase">
+                                                Protip!
+                                            </span>{' '}
+                                            Make sure you are certain about the
+                                            content you submit. There is no
+                                            undo.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                    {isNew && (
+                        // TODO: Implement "New" functionality
+                        <>
+                        Hmmm... Oh no! I totally forgot to implement this functionality ~ Jonte
+                        </>
                     )}
                 </main>
             </div>

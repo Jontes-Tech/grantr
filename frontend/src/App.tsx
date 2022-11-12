@@ -50,6 +50,7 @@ export const App = () => {
                             <>
                                 <Route path="/" element={<Home />} />
                                 <Route path="/admin" element={<Admin />} />
+                                <Route path="/admin/new" element={<Admin isNew/>}/>
                                 <Route path="/admin/g/:id" element={<Admin />} />
                                 <Route path="/grant/:id" element={<Grant />} />
                             </>
