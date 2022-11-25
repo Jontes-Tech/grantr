@@ -19,7 +19,7 @@ const TextInput = (
                 ref={ref}
                 placeholder={props.placeholder}
                 type={props.type}
-                className="focus:outline-none focus:border-2 focus:border-primary focus:ring-primary bg-neutral-600 text-sm rounded-lg block w-full p-2.5 text-white"
+                className="focus:outline-none focus:outline-primary bg-neutral-600 text-sm rounded-lg block w-full p-2.5 text-white"
             ></input>
         </div>
     );

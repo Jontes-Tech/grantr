@@ -134,8 +134,7 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                         </div>
                     </aside>
                 )}
-                <main className="md:m-14">
-                    {!isNew && (
+                <main className="md:m-14 flex-1">
                         <>
                             {!id && (
                                 <div>
@@ -158,8 +157,8 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                                 notfoundimage
                                             }
                                         />
-                                        <h1 className="p-4 text-3xl inline-block text-white">
-                                            {grant?.name}
+                                        <h1 className="p-4 max-w-48 text-3xl inline-block text-white">
+                                            {grant?.name||'Enter a Grant Name'}
                                         </h1>
                                     </div>
                                     <div className="py-8">
@@ -289,13 +288,6 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                 </div>
                             )}
                         </>
-                    )}
-                    {isNew && (
-                        // TODO: Implement "New" functionality
-                        <>
-                        Hmmm... Oh no! I totally forgot to implement this functionality ~ Jonte
-                        </>
-                    )}
                 </main>
             </div>
         </div>
