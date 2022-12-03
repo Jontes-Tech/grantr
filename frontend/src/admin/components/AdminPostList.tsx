@@ -3,7 +3,7 @@ import useSWR from 'swr';
 
 import { GrantProgram } from '../../../../backend/src/grant.type';
 import { GLOBALS } from '../..';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import notfoundimage from '../../images/notfoundimage.webp'
 
 export const AdminPostList: FC = () => {
@@ -18,6 +18,8 @@ export const AdminPostList: FC = () => {
 
     if (error) return <div>Error loading data</div>;
 
+    const { id } = useParams();
+
     if (!data) return <div>Loading...</div>;
 
     return (
@@ -25,11 +27,12 @@ export const AdminPostList: FC = () => {
             {data.documents.map((program) => (
                 <Link
                     key={program.value.id}
-                    to={'/admin/g/'+program.value.id}
-                    className="w-full justify-left flex justify-start pt-4"
+                    to={'/admin/g/' + program.value.id}
+                    className={`w-full justify-left flex justify-start pt-4 ${program.value.id === id ? 'bg-neutral-700 rounded-md shadow-md' : ''}`}
                 >
                     <img
                         className="h-8 mr-2 aspect-square rounded-full"
+
                         src={
                             program.value.image_url || notfoundimage
                         }
@@ -38,9 +41,10 @@ export const AdminPostList: FC = () => {
                         <p className="text-white text-sm">
                             {program.value.name}
                         </p>
-                        <p className="text-gray-600 text-xs hidden sm:block">
-                            Last updated 33 seconds ago
-                            <br /> by Jonte
+                        <p className={`text-xs hidden sm:block ${program.value.id === id ? 'text-gray-400' : 'text-gray-700'}`}>
+                            {/* TODO: Implement these APIs */}
+                            Last updated {"33 seconds"} ago
+                            <br /> by {"jontes.eth"}
                         </p>
                     </div>
                 </Link>

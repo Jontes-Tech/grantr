@@ -67,7 +67,7 @@ export const Profile = () => {
                                     <button
                                         onClick={openConnectModal}
                                         type="button"
-                                        className="bg-primary px-4 py-2 font-bold hover:brightness-75"
+                                        className="bg-primary text-dark px-4 py-2 font-bold hover:brightness-75"
                                     >
                                         Connect Wallet
                                     </button>
@@ -79,7 +79,7 @@ export const Profile = () => {
                                     <button
                                         onClick={openChainModal}
                                         type="button"
-                                        className="bg-primary px-4 py-2 font-bold hover:brightness-75"
+                                        className="bg-primary text-dark px-4 py-2 font-bold hover:brightness-75"
                                     >
                                         Switch Network
                                     </button>
@@ -104,7 +104,7 @@ export const Profile = () => {
                                                     {account.ensName}
                                                     {isAdmin && <AdminCrown />}
                                                 </div>
-                                                <div className="text-neutral-600 text-sm">
+                                                <div className="text-dark text-sm">
                                                     {account.address.substring(
                                                         0,
                                                         6
