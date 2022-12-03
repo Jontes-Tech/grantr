@@ -67,7 +67,7 @@ export const Profile = () => {
                                     <button
                                         onClick={openConnectModal}
                                         type="button"
-                                        className="bg-primary text-dark px-4 py-2 font-bold hover:brightness-75"
+                                        className="bg-primary text-dark h-full px-4 font-bold hover:brightness-75 text-xs md:text-lg"
                                     >
                                         Connect Wallet
                                     </button>

@@ -28,7 +28,7 @@ export const AdminPostList: FC = () => {
                 <Link
                     key={program.value.id}
                     to={'/admin/g/' + program.value.id}
-                    className={`w-full justify-left flex justify-start pt-4 ${program.value.id === id ? 'bg-neutral-700 rounded-md shadow-md' : ''}`}
+                    className={`w-full justify-left flex justify-start p-2 ${program.value.id === id ? 'bg-neutral-700 rounded-md shadow-md' : ''}`}
                 >
                     <img
                         className="h-8 mr-2 aspect-square rounded-full"

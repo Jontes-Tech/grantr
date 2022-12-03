@@ -71,8 +71,8 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         }));
     };
 
-    const [tagOptions, setTagOptions] = useState<any>();
-    const [selectedTags, setSelectedTags] = useState<any>();
+    const [tagOptions, setTagOptions] = useState<{}[]>();
+    const [selectedTags, setSelectedTags] = useState<{}>();
 
     useMemo(() => {
         setTagOptions(parseSelect(tags ?? {}));
@@ -83,14 +83,26 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                 .filter((t) => t)
         );
     }, [grant, tags]);
-    console.log(grant?.tags)
+
+    const handleResize = () => {
+        if (window.innerWidth < 640) {
+            setShowSidebar(false)
+        } else {
+            setShowSidebar(true);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize)
+    }, [])
     return (
         <div className="text-white">
-            <div className="flex justify-between w-full border-b border-neutral-700 h-10 bg-black-80 z-50 text-white">
+            {(showSidebar && window.innerWidth < 640) && (<div className='fixed h-full w-full l-0 t-0 opacity-90 backdrop-blur-3xl z-[90]'>Hello, Jonte World</div>)}
+            <div className="bg-dark sticky top-0 left-0 z-[100] flex justify-between w-full border-b border-neutral-700 h-10 bg-black-80 text-white">
                 <div className="flex">
-                    <div className="flex gap-2 h-full items-center px-4 border-r border-neutral-700 hover:bg-neutral-800 cursor-pointer">
+                    <div className="flex gap-2 h-full items-center bg-dark px-4 border-r border-neutral-700 hover:bg-neutral-800 cursor-pointer">
                         <div>
-                            <div className="bg-primary bg-clip-text text-transparent font-bold leading-none">
+                            <div className="text-[#FFCC00] text-transparent font-bold leading-none">
                                 Grantr
                             </div>
 
@@ -111,29 +123,25 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
             <div className="flex">
                 {showSidebar && (
                     <aside
-                        className="w-72 h-full border-r-2 border-gray-600 sticky top-0 left-0"
+                        className="w-72 h-full border-r-2 border-gray-600 z-[100] top-10 left-0 fixed sm:top-0 sm:sticky"
                         aria-label="Sidebar"
                     >
                         <div className="py-4 px-3 bg-dark rounded border-white h-screen overflow-y-scroll">
                             <ul className="space-y-2">
-                                <p className="bg-primary text-center p-2 border-gray-600 border-4 text-dark">
+                                <p className="bg-primary bg text-center p-2 border-gray-600 border-4 text-dark">
                                     Grants
                                 </p>
                                 <Link
                                     to="/admin/new"
                                     className="w-full justify-left flex justify-start p-2 bg-neutral-800 shadow-lg rounded-lg"
                                 >
-                                    <img
-                                        className="h-8 mr-2 aspect-square rounded-full"
-                                        src={plusimage}
-                                    />
                                     <div className="align-middle">
                                         <p className="text-white text-lg">
-                                            Create New!
+                                            + Create New!
                                         </p>
                                     </div>
                                 </Link>
-                                <AdminPostList />
+                                <AdminPostList/>
                             </ul>
                         </div>
                     </aside>
