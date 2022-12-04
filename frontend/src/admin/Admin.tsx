@@ -293,7 +293,7 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
               m-0
               focus:outline-none focus:border-primary
             "
-                                        rows={3}
+                                        rows={8}
                                         defaultValue={
                                             isNew ? '' : grant?.description
                                         }
@@ -307,6 +307,13 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     >
                                         Save
                                     </button>
+                                    {/* <button
+                                        type="button"
+                                        onClick={() => alert("Feature not implemented :jonteshrug:")}
+                                        className="bg-neutral-500 text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
+                                    >
+                                        Preview
+                                    </button> */}
                                     <p className="text-xs text-neutral-500">
                                         <span className="text-neutral-400 text-bold uppercase">
                                             Protip!
