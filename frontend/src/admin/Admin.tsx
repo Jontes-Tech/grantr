@@ -11,6 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { theme } from '../styles/selectStyle';
 import TextInput from './components/TextInput';
 import { Profile } from '../components/Profile';
+import { SaveButton } from '../components/SaveButton';
 
 export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     const [showSidebar, setShowSidebar] = useState(true);
@@ -76,12 +77,14 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
     useMemo(() => {
         setTagOptions(parseSelect(tags ?? {}));
-        setSelectedTags(
-            (grant?.tags as string)
-                .split(',')
-                .map((t) => tagOptions.find((o: { value: string; }) => o.value === t))
-                .filter((t) => t)
-        );
+        if (tagOptions !== undefined) {
+            setSelectedTags(
+                (grant?.tags as string)
+                    .split(',')
+                    .map((t) => tagOptions.find((o: { value: string; }) => o.value === t))
+                    .filter((t) => t)
+            );
+        }
     }, [grant, tags]);
 
     const handleResize = () => {
@@ -300,13 +303,7 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     ></textarea>
                                 </div>
                                 <div>
-                                    <button
-                                        type="button"
-                                        onClick={submit}
-                                        className="bg-primary text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
-                                    >
-                                        Save
-                                    </button>
+                                    <span onClick={() => submit()}><SaveButton isAdmin={false} loading={false}/></span>
                                     {/* <button
                                         type="button"
                                         onClick={() => alert("Feature not implemented :jonteshrug:")}
