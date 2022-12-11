@@ -1,6 +1,6 @@
-import { FC, useRef } from 'react';
+import { FC, useCallback, useRef } from 'react';
 import { AdminPostList } from './components/AdminPostList';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { GLOBALS } from '..';
 import { GrantProgram } from '../../../backend/src/grant.type';
 import useSWR from 'swr';
@@ -12,6 +12,12 @@ import { theme } from '../styles/selectStyle';
 import TextInput from './components/TextInput';
 import { Profile } from '../components/Profile';
 import { SaveButton } from '../components/SaveButton';
+import { useNetwork, useSignTypedData } from 'wagmi';
+
+
+import {generateSunflake } from 'sunflake';
+
+const sunflake = generateSunflake();
 
 export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     const [showSidebar, setShowSidebar] = useState(true);
@@ -44,6 +50,115 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         });
     };
 
+    const { chain: activeChain } = useNetwork();
+    const {
+        data: _,
+        signTypedDataAsync,
+        isLoading: isSigning,
+    } = useSignTypedData();
+    const nav = useNavigate();
+    const deleteData = useCallback(async () => {
+        console.log('onSign', grant?.id);
+        const dataValue = {
+            grant_id,
+            action: 'delete',
+        };
+
+        const signature = await signTypedDataAsync({
+            value: dataValue,
+            domain: {
+                chainId: activeChain?.id,
+                name: 'grantr.app',
+                version: '1.0',
+            },
+            types: {
+                GrantUpdateRequest: [
+                    { name: 'grant_id', type: 'string' },
+                    { name: 'action', type: 'string' },
+                ],
+            },
+        });
+
+        const message_data = {
+            signature,
+            data: dataValue,
+        };
+
+        // Inser fetch here
+        const request = await fetch(GLOBALS.API_URL + '/delete', {
+            method: 'POST',
+            body: JSON.stringify(message_data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!request.ok) {
+            alert('Error');
+        } else {
+            nav(-1);
+        }
+    }, []);
+
+    const uploadData = async () => {
+        const data = {
+            tags: selectedTags[0]?.value || '',
+            website: websiteRef?.current.value || '',
+            twitter: twitterRef?.current.value || '',
+            discord: discordRef?.current.value || '',
+            telegram: telegramRef?.current.value || '',
+            whitepaper: whitepaperRef?.current.value || '',
+            imageurl: imageURLRef?.current.value || '',
+            min: minRef?.current.value || '',
+            max: maxRef?.current.value || '',
+            currency: currencyRef?.current.value || '',
+            title: titleRef?.current.value || '',
+            id: grant_id
+        }
+        console.log('onSign', data.id);
+        const dataValue = {
+            grant_id: data.id,
+            grant_data: JSON.stringify(data),
+        };
+
+        const signature = await signTypedDataAsync({
+            value: dataValue,
+            domain: {
+                chainId: activeChain?.id,
+                name: 'grantr.app',
+                version: '1.0',
+            },
+            types: {
+                GrantUpdateRequest: [
+                    { name: 'grant_id', type: 'string' },
+                    { name: 'grant_data', type: 'string' },
+                ],
+            },
+        });
+
+        const message_data = {
+            signature,
+            data: dataValue,
+        };
+
+        // Inser fetch here
+        const request = await fetch(GLOBALS.API_URL + '/update', {
+            method: 'POST',
+            body: JSON.stringify(message_data),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        console.log(request);
+
+        if (!request.ok) {
+            alert('Error');
+        } else {
+            nav(-1);
+        }
+    };
+
     const { id } = useParams();
     const { data: tags } = useSWR(
         `/tags/list`,
@@ -64,7 +179,10 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         },
         { revalidateOnFocus: true }
     );
-
+    const grant_id = useMemo(
+        () => (grant && grant?.id ? grant.id : sunflake()),
+        [grant?.id]
+    );
     const parseSelect = (data: { [key: string]: { name: string } }) => {
         return Object.entries(data).map(([name, { name: label }]) => ({
             label,
@@ -303,7 +421,8 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     ></textarea>
                                 </div>
                                 <div>
-                                    <span onClick={() => submit()}><SaveButton isAdmin={false} loading={false}/></span>
+                                    <span onClick={() => uploadData()}><SaveButton isAdmin={false} loading={false}/></span>
+                                    {/* IMPLEMENT POPUP WITH GRANT VIEW :) */}
                                     {/* <button
                                         type="button"
                                         onClick={() => alert("Feature not implemented :jonteshrug:")}
@@ -311,6 +430,13 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     >
                                         Preview
                                     </button> */}
+                                    <button
+                                        type="button"
+                                        onClick={() => deleteData()}
+                                        className="bg-red-600 text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
+                                    >
+                                        Delete
+                                    </button>
                                     <p className="text-xs text-neutral-500">
                                         <span className="text-neutral-400 text-bold uppercase">
                                             Protip!
