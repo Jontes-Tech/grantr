@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { GLOBALS } from '../..';
 import { GrantProgram } from '../../../../backend/src/grant.type';
@@ -11,6 +11,7 @@ export const AdminTagList: FC = () => {
 
         return (await request.json()) as Record<string, Tag>;
     });
+    const { id } = useParams();
 
     if (error) return <div>Error loading data</div>;
 
@@ -19,16 +20,22 @@ export const AdminTagList: FC = () => {
     return (
         <>
             {Object.entries(data).map(([key, tag]) => (
-                <div
+                <Link
                     key={key}
-                    className="w-full bg-primary p-4 flex justify-between mb-4 rounded-xl"
+                    to={'/admin/tag/' + key}
+                    className={`w-full justify-left flex justify-start p-2 ${key === id ? 'bg-neutral-700 rounded-md shadow-md' : ''}`}
                 >
-                    <div>
-                        {tag.name}
-                        <span className="text-sm opacity-70 pl-1">({key})</span>
+                    <div className="align-middle">
+                        <p className="text-white text-sm">
+                            {tag.name}
+                        </p>
+                        <p className={`text-xs hidden sm:block ${key === id ? 'text-gray-400' : 'text-gray-700'}`}>
+                            {/* TODO: Implement these APIs */}
+                            Last updated {"33 seconds"} ago
+                            <br /> by {"jontes.eth"}
+                        </p>
                     </div>
-                    <Link to={'/admin/tags/' + key + '/edit'}>EDIT</Link>
-                </div>
+                </Link>
             ))}
         </>
     );

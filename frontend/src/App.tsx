@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Admin } from './admin/Admin';
 import { Grant } from './grant/Grant';
 import { Home } from './home/Home';
+import { AdminTagEdit } from './admin/tags/AdminTagEdit';
 
 import {
     darkTheme,
@@ -50,8 +51,18 @@ export const App = () => {
                             <>
                                 <Route path="/" element={<Home />} />
                                 <Route path="/admin" element={<Admin />} />
-                                <Route path="/admin/new" element={<Admin isNew/>}/>
-                                <Route path="/admin/g/:id" element={<Admin />} />
+                                <Route
+                                    path="/admin/new"
+                                    element={<Admin isNew />}
+                                />
+                                <Route
+                                    path="/admin/g/:id"
+                                    element={<Admin />}
+                                />
+                                <Route
+                                    path="/admin/tag/:id"
+                                    element={<Admin isTag />}
+                                />
                                 <Route path="/grant/:id" element={<Grant />} />
                             </>
                         ) : (

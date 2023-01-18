@@ -6,20 +6,30 @@ import { GrantProgram } from '../../../backend/src/grant.type';
 import useSWR from 'swr';
 import notfoundimage from '../images/notfoundimage.webp';
 import plusimage from '../images/plusimage.webp';
-import Select, { StylesConfig } from 'react-select';
+import Select, { MultiValue, StylesConfig } from 'react-select';
 import { useState, useEffect, useMemo } from 'react';
 import { theme } from '../styles/selectStyle';
 import TextInput from './components/TextInput';
 import { Profile } from '../components/Profile';
 import { SaveButton } from '../components/SaveButton';
-import { useNetwork, useSignTypedData } from 'wagmi';
+import { useAccount, useNetwork, useSignTypedData } from 'wagmi';
 
-
-import {generateSunflake } from 'sunflake';
+import { generateSunflake } from 'sunflake';
+import { AdminTagList } from './tags/AdminTagList';
 
 const sunflake = generateSunflake();
 
-export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
+export const Admin: FC<{ isNew?: boolean, isTag?: boolean }> = ({ isNew = false, isTag = false }) => {
+    const accountData = useAccount();
+    const isAdmin = useMemo(
+        () =>
+            accountData &&
+            accountData.address &&
+            GLOBALS.ADMINS.includes(accountData.address.toLowerCase())
+                ? true
+                : false,
+        [accountData]
+    );
     const [showSidebar, setShowSidebar] = useState(true);
 
     // TODO: Somehow make this more readable and less bloated
@@ -28,27 +38,11 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     const discordRef = useRef(null);
     const telegramRef = useRef(null);
     const whitepaperRef = useRef(null);
-    const imageURLRef = useRef(null);
     const minRef = useRef(null);
     const maxRef = useRef(null);
     const currencyRef = useRef(null);
+    const idRef = useRef(null);
     const titleRef = useRef(null);
-
-    const submit = () => {
-        console.log({
-            tags: selectedTags[0].value || '',
-            website: websiteRef?.current.value || '',
-            twitter: twitterRef?.current.value || '',
-            discord: discordRef?.current.value || '',
-            telegram: telegramRef?.current.value || '',
-            whitepaper: whitepaperRef?.current.value || '',
-            imageurl: imageURLRef?.current.value || '',
-            min: minRef?.current.value || '',
-            max: maxRef?.current.value || '',
-            currency: currencyRef?.current.value || '',
-            title: titleRef?.current.value || '',
-        });
-    };
 
     const { chain: activeChain } = useNetwork();
     const {
@@ -94,28 +88,35 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         });
 
         if (!request.ok) {
-            alert('Error');
+            alert('Oh no, Error');
         } else {
             nav(-1);
         }
     }, []);
 
     const uploadData = async () => {
+        const taglist = selectedTags
+            ? selectedTags
+                  .map((tag) => tag.value)
+                  .sort()
+                  .join(',')
+            : '';
+        console.log('Hi' + taglist);
         const data = {
-            tags: selectedTags[0]?.value || '',
-            website: websiteRef?.current.value || '',
-            twitter: twitterRef?.current.value || '',
-            discord: discordRef?.current.value || '',
-            telegram: telegramRef?.current.value || '',
-            whitepaper: whitepaperRef?.current.value || '',
-            imageurl: imageURLRef?.current.value || '',
-            min: minRef?.current.value || '',
-            max: maxRef?.current.value || '',
-            currency: currencyRef?.current.value || '',
-            title: titleRef?.current.value || '',
-            id: grant_id
-        }
-        console.log('onSign', data.id);
+            tags: taglist,
+            website: websiteRef?.current.value || grant?.website || '',
+            twitter: twitterRef?.current.value || grant?.twitter || '',
+            discord: discordRef?.current.value || grant?.discord || '',
+            telegram: telegramRef?.current.value || grant?.telegram || '',
+            whitepaper: whitepaperRef?.current.value || grant?.whitepaper || '',
+            image_url: imageURLRef?.current.value || grant?.image_url || '',
+            min_amount: minRef?.current.value || grant?.min_amount || '',
+            max_amount: maxRef?.current.value || grant?.max_amount || '',
+            currency: currencyRef?.current.value || grant?.currency || '',
+            name: titleRef?.current?.value || grant?.name || '',
+            id: idRef?.current.value || grant?.id || '',
+        };
+        console.log('onSign', data);
         const dataValue = {
             grant_id: data.id,
             grant_data: JSON.stringify(data),
@@ -190,16 +191,20 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         }));
     };
 
-    const [tagOptions, setTagOptions] = useState<{}[]>();
-    const [selectedTags, setSelectedTags] = useState<{}>();
+    const [tagOptions, setTagOptions] =
+        useState<MultiValue<{ value: string; label: string }>>();
+    const [selectedTags, setSelectedTags] =
+        useState<MultiValue<{ value: string; label: string }>>();
 
-    useMemo(() => {
+    useEffect(() => {
         setTagOptions(parseSelect(tags ?? {}));
-        if (tagOptions !== undefined) {
+        if (grant?.tags !== undefined) {
             setSelectedTags(
                 (grant?.tags as string)
                     .split(',')
-                    .map((t) => tagOptions.find((o: { value: string; }) => o.value === t))
+                    .map((t) =>
+                        tagOptions.find((o: { value: string }) => o.value === t)
+                    )
                     .filter((t) => t)
             );
         }
@@ -207,18 +212,25 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
     const handleResize = () => {
         if (window.innerWidth < 640) {
-            setShowSidebar(false)
+            setShowSidebar(false);
         } else {
             setShowSidebar(true);
         }
     };
 
     useEffect(() => {
-        window.addEventListener("resize", handleResize)
-    }, [])
+        window.addEventListener('resize', handleResize);
+    }, []);
+    if (!sessionStorage.getItem('mode')) {
+        sessionStorage.setItem('mode', 'grant');
+    }
+    let [mode, setMode] = useState(sessionStorage.getItem('mode'));
+    const imageURLRef = useRef(grant?.image_url || notfoundimage);
     return (
         <div className="text-white">
-            {(showSidebar && window.innerWidth < 640) && (<div className='fixed h-full w-full l-0 t-0 opacity-90 backdrop-blur-3xl z-[90]'></div>)}
+            {showSidebar && window.innerWidth < 640 && (
+                <div className="fixed h-full w-full l-0 t-0 opacity-90 backdrop-blur-3xl z-[90]"></div>
+            )}
             <div className="bg-dark sticky top-0 left-0 z-[110] flex justify-between w-full border-b border-neutral-700 h-10 bg-black-80 text-white">
                 <div className="flex">
                     <div className="flex gap-2 h-full items-center bg-dark px-4 border-r border-neutral-700 hover:bg-neutral-800 cursor-pointer">
@@ -231,14 +243,14 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                         </div>
                     </div>
                     <Profile></Profile>
-                    <div
+                    <button
                         onClick={() => {
                             setShowSidebar(!showSidebar);
                         }}
                         className="flex gap-2 h-full items-center px-4 border-r border-neutral-700 hover:bg-neutral-800 cursor-pointer"
                     >
                         Toggle Sidebar
-                    </div>
+                    </button>
                 </div>
             </div>
             <div className="flex">
@@ -249,12 +261,45 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                     >
                         <div className="py-4 px-3 bg-dark rounded border-white h-screen overflow-y-scroll">
                             <ul className="space-y-2">
-                                <p className="bg-primary bg text-center p-2 border-gray-600 border-4 text-dark">
-                                    Grants
-                                </p>
+                                <div className="flex">
+                                    <button
+                                        onClick={() => {
+                                            sessionStorage.setItem(
+                                                'mode',
+                                                'grant'
+                                            );
+                                            setMode('grant');
+                                        }}
+                                        className={
+                                            (mode === 'grant'
+                                                ? 'bg-primary'
+                                                : 'bg-neutral-600') +
+                                            ' cursor-pointer w-[50%] text-center mr-1 p-2 text-dark'
+                                        }
+                                    >
+                                        Grants
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            sessionStorage.setItem(
+                                                'mode',
+                                                'tag'
+                                            );
+                                            setMode('tag');
+                                        }}
+                                        className={
+                                            (mode === 'tag'
+                                                ? 'bg-primary'
+                                                : 'bg-neutral-600') +
+                                            ' cursor-pointer w-[50%] text-center ml-1 p-2 text-dark'
+                                        }
+                                    >
+                                        Tags
+                                    </button>
+                                </div>
                                 <Link
                                     to="/admin/new"
-                                    className="w-full justify-left flex justify-start p-2 bg-neutral-800 shadow-lg rounded-lg"
+                                    className="w-full justify-left flex justify-start p-2 bg-neutral-800"
                                 >
                                     <div className="align-middle">
                                         <p className="text-white text-lg">
@@ -262,13 +307,20 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                         </p>
                                     </div>
                                 </Link>
-                                <AdminPostList/>
+                                {mode === 'tag' ? (
+                                    <AdminTagList />
+                                ) : (
+                                    <AdminPostList />
+                                )}
                             </ul>
                         </div>
                     </aside>
                 )}
                 <main className="md:m-14 flex-1">
                     <>
+                        {isTag && (
+                            <div className="p-2 text-white">Hi</div>
+                            )}
                         {!id && !isNew && (
                             <div>
                                 <h1 className="text-4xl text-white">
@@ -287,11 +339,16 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                         className="aspect-square h-16 rounded-full border-2 border-gray-400"
                                         src={grant?.image_url || notfoundimage}
                                     />
-                                    <h1
-                                        className="p-4 max-w-48 text-3xl inline-block text-white"
-                                        ref={titleRef}
-                                    >
-                                        {grant?.name || 'Enter a Grant Name'}
+                                    <h1 className="p-4 max-w-48 text-3xl inline-block text-white">
+                                        <input
+                                            className="bg-neutral-800 p-4 rounded shadow-lg min-w-48"
+                                            type="text"
+                                            ref={titleRef}
+                                            defaultValue={
+                                                grant?.name ||
+                                                'Enter a Grant Name'
+                                            }
+                                        ></input>
                                     </h1>
                                 </div>
                                 <div className="py-8">
@@ -391,6 +448,15 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                         placeholder=""
                                         type="text"
                                     />
+                                    <TextInput
+                                        name="ID"
+                                        defaultValue={
+                                            isNew ? grant_id : grant?.id
+                                        }
+                                        ref={idRef}
+                                        placeholder=""
+                                        type="text"
+                                    />
                                 </div>
                                 <div className="mt-4">
                                     <h2 className="text-xl pb-2">
@@ -398,22 +464,22 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     </h2>
                                     <textarea
                                         className="
-              form-control
-              block
-              w-full
-              px-3
-              py-1.5
-              text-base
-              font-normal
-              text-white
-              bg-neutral-700 bg-clip-padding
-              border border-solid border-gray-500
-              rounded
-              transition
-              ease-in-out
-              m-0
-              focus:outline-none focus:border-primary
-            "
+                                            form-control
+                                            block
+                                            w-full
+                                            px-3
+                                            py-1.5
+                                            text-base
+                                            font-normal
+                                            text-white
+                                            bg-neutral-700 bg-clip-padding
+                                            border border-solid border-gray-500
+                                            rounded
+                                            transition
+                                            ease-in-out
+                                            m-0
+                                            focus:outline-none focus:border-primary
+                                            "
                                         rows={8}
                                         defaultValue={
                                             isNew ? '' : grant?.description
@@ -421,7 +487,14 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     ></textarea>
                                 </div>
                                 <div>
-                                    <span onClick={() => uploadData()}><SaveButton isAdmin={false} loading={false}/></span>
+                                    <span
+                                        onClick={async () => await uploadData()}
+                                    >
+                                        <SaveButton
+                                            isAdmin={isAdmin}
+                                            loading={false}
+                                        />
+                                    </span>
                                     {/* IMPLEMENT POPUP WITH GRANT VIEW :) */}
                                     {/* <button
                                         type="button"
@@ -430,13 +503,15 @@ export const Admin: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                                     >
                                         Preview
                                     </button> */}
-                                    <button
-                                        type="button"
-                                        onClick={() => deleteData()}
-                                        className="bg-red-600 text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
-                                    >
-                                        Delete
-                                    </button>
+                                    {/* {!isNew && (
+                                        <button
+                                            type="button"
+                                            onClick={() => deleteData()}
+                                            className="bg-red-600 text-black focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-6"
+                                        >
+                                            Delete
+                                        </button>
+                                    )} */}
                                     <p className="text-xs text-neutral-500">
                                         <span className="text-neutral-400 text-bold uppercase">
                                             Protip!
